@@ -1,4 +1,4 @@
-import { Avalanche, BinTools, BN, Buffer } from "../../src"
+import { Avalanche, BinTools, BN, Buffer } from "avalanche/dist"
 import {
   PlatformVMAPI,
   KeyChain,
@@ -13,19 +13,18 @@ import {
   CreateSubnetTx,
   Tx,
   SECPOwnerOutput
-} from "../../src/apis/platformvm"
-import { Output } from "../../src/common"
+} from "avalanche/dist/apis/platformvm"
 import {
   PrivateKeyPrefix,
   DefaultLocalGenesisPrivateKey,
   Defaults
-} from "../../src/utils"
+} from "avalanche/dist/utils"
 
 const ip: string = "localhost"
 const port: number = 9650
 const protocol: string = "http"
 const networkID: number = 1337
-const avalanche: Avalanche = new Avalanche(ip, port, protocol, networkID)
+const avalanche: Cryft = new Cryft(ip, port, protocol, networkID)
 const pchain: PlatformVMAPI = avalanche.PChain()
 const bintools: BinTools = BinTools.getInstance()
 // Keychain with 4 keys-A, B, C, and D
@@ -89,24 +88,21 @@ const main = async (): Promise<any> => {
   const utxoSet: UTXOSet = platformVMUTXOResponse.utxos
   const utxos: UTXO[] = utxoSet.getAllUTXOs()
   utxos.forEach((utxo: UTXO): void => {
-    const output: Output = utxo.getOutput()
-    if(output.getTypeID() === 7) {
-      const amountOutput = utxo.getOutput() as AmountOutput
-      const amt: BN = amountOutput.getAmount().clone()
-      const txid: Buffer = utxo.getTxID()
-      const outputidx: Buffer = utxo.getOutputIdx()
+    const amountOutput = utxo.getOutput() as AmountOutput
+    const amt: BN = amountOutput.getAmount().clone()
+    const txid: Buffer = utxo.getTxID()
+    const outputidx: Buffer = utxo.getOutputIdx()
 
-      const secpTransferInput: SECPTransferInput = new SECPTransferInput(amt)
-      secpTransferInput.addSignatureIdx(0, pAddresses[0])
+    const secpTransferInput: SECPTransferInput = new SECPTransferInput(amt)
+    secpTransferInput.addSignatureIdx(0, pAddresses[0])
 
-      const input: TransferableInput = new TransferableInput(
-        txid,
-        outputidx,
-        avaxAssetID,
-        secpTransferInput
-      )
-      inputs.push(input)
-    }
+    const input: TransferableInput = new TransferableInput(
+      txid,
+      outputidx,
+      avaxAssetID,
+      secpTransferInput
+    )
+    inputs.push(input)
   })
 
   const subnetOwner: SECPOwnerOutput = new SECPOwnerOutput(

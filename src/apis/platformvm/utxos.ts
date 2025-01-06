@@ -43,8 +43,7 @@ import {
   InsufficientFundsError,
   ThresholdError,
   FeeAssetError,
-  TimeError,
-  UnknownFormatError
+  TimeError
 } from "../../utils/errors"
 import { CreateChainTx } from "."
 import { GenesisData } from "../avm"
@@ -89,54 +88,29 @@ export class UTXO extends StandardUTXO {
   }
 
   /**
-   * Takes a base-58 or hex string containing a [[UTXO]], parses it, populates the class, and returns the length of the StandardUTXO in bytes.
+   * Takes a base-58 string containing a [[UTXO]], parses it, populates the class, and returns the length of the StandardUTXO in bytes.
    *
    * @param serialized A base-58 string containing a raw [[UTXO]]
-   * @param format The format of the encoded [[UTXO]] (cb58 or hex). Defaults to cb58 per existing codebase
    *
    * @returns The length of the raw [[UTXO]]
    *
    * @remarks
-   * Default encoding format is cb58, if providing hex encoded string please specify format as 'hex'
+   * unlike most fromStrings, it expects the string to be serialized in cb58 format
    */
-  fromString(serialized: string, format: string = 'cb58'): number {
-    switch (format) {
-      case "cb58": {
-         /* istanbul ignore next */
-        return this.fromBuffer(bintools.cb58Decode(serialized));
-      };
-      case "hex": {
-        let decoded = serialization.decoder(serialized, 'hex', 'hex', 'cb58');
-        this.fromString(decoded);
-        return this.toBuffer().length;
-      };
-      default: {
-        throw new UnknownFormatError(`Specified format '${format}' is unknown, should be hex or cb58.`);
-      };
-    }   
+  fromString(serialized: string): number {
+    /* istanbul ignore next */
+    return this.fromBuffer(bintools.cb58Decode(serialized))
   }
 
   /**
    * Returns a base-58 representation of the [[UTXO]].
-   * 
-   * @param format The format of the encoded [[UTXO]] (cb58 or hex). Defaults to cb58 per existing codebase
    *
    * @remarks
-   * Default encoding format to cb58, if you want a hex encoded output please specify format as 'hex'
+   * unlike most toStrings, this returns in cb58 serialization format
    */
-  toString(format: string = 'cb58'): string {
-    switch (format) {
-      case "cb58": {
-        /* istanbul ignore next */
-        return bintools.cb58Encode(this.toBuffer())
-      };
-      case "hex": {
-        return serialization.encoder(bintools.cb58Encode(this.toBuffer()), 'hex', 'cb58', 'hex');
-      };
-      default: {
-        throw new UnknownFormatError(`Specified format '${format}' is unknown, should be hex or cb58.`);
-      };
-    }      
+  toString(): string {
+    /* istanbul ignore next */
+    return bintools.cb58Encode(this.toBuffer())
   }
 
   clone(): this {

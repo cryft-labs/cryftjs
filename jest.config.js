@@ -1,3 +1,5 @@
+const { pathsToModuleNameMapper } = require("ts-jest/utils")
+
 module.exports = {
   preset: "ts-jest",
   verbose: true,

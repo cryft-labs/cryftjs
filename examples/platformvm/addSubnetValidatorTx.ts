@@ -1,4 +1,4 @@
-import { Avalanche, BinTools, BN, Buffer } from "../../src"
+import { Avalanche, BinTools, BN, Buffer } from "avalanche/dist"
 import {
   PlatformVMAPI,
   KeyChain,
@@ -12,21 +12,20 @@ import {
   UnsignedTx,
   Tx,
   AddSubnetValidatorTx
-} from "../../src/apis/platformvm"
+} from "avalanche/dist/apis/platformvm"
 import {
   PrivateKeyPrefix,
   DefaultLocalGenesisPrivateKey,
   NodeIDStringToBuffer,
   Defaults
-} from "../../src/utils"
-import { Output } from "../../src/common"
+} from "avalanche/dist/utils"
 
 const bintools: BinTools = BinTools.getInstance()
 const ip: string = "localhost"
 const port: number = 9650
 const protocol: string = "http"
 const networkID: number = 1337
-const avalanche: Avalanche = new Avalanche(ip, port, protocol, networkID)
+const avalanche: Cryft = new Cryft(ip, port, protocol, networkID)
 const pchain: PlatformVMAPI = avalanche.PChain()
 // Keychain with 4 keys-A, B, C, and D
 const pKeychain: KeyChain = pchain.keyChain()
@@ -59,8 +58,8 @@ const fee: BN = pchain.getDefaultTxFee()
 const threshold: number = 1
 const locktime: BN = new BN(0)
 const nodeID: string = "NodeID-NFBbbJ4qCmNaCzeW7sxErhvWqvEQMnYcN"
-const startTime: BN = new BN(1672245821)
-const endTime: BN = new BN(1673541715)
+const startTime: BN = new BN(1652146558)
+const endTime: BN = new BN(1653442362)
 const memo: Buffer = Buffer.from(
   "Manually create a AddSubnetValidatorTx which creates a 1-of-2 AVAX utxo and adds a validator to a subnet by correctly signing the 2-of-3 SubnetAuth"
 )
@@ -86,29 +85,26 @@ const main = async (): Promise<any> => {
   const utxoSet: UTXOSet = platformVMUTXOResponse.utxos
   const utxos: UTXO[] = utxoSet.getAllUTXOs()
   utxos.forEach((utxo: UTXO): void => {
-    const output: Output = utxo.getOutput()
-    if(output.getTypeID() === 7) {
-      const amountOutput: AmountOutput = utxo.getOutput() as AmountOutput
-      const amt: BN = amountOutput.getAmount().clone()
-      const txid: Buffer = utxo.getTxID()
-      const outputidx: Buffer = utxo.getOutputIdx()
+    const amountOutput: AmountOutput = utxo.getOutput() as AmountOutput
+    const amt: BN = amountOutput.getAmount().clone()
+    const txid: Buffer = utxo.getTxID()
+    const outputidx: Buffer = utxo.getOutputIdx()
 
-      const secpTransferInput: SECPTransferInput = new SECPTransferInput(amt)
-      secpTransferInput.addSignatureIdx(0, pAddresses[0])
+    const secpTransferInput: SECPTransferInput = new SECPTransferInput(amt)
+    secpTransferInput.addSignatureIdx(0, pAddresses[0])
 
-      const input: TransferableInput = new TransferableInput(
-        txid,
-        outputidx,
-        avaxAssetID,
-        secpTransferInput
-      )
-      inputs.push(input)
-    }
+    const input: TransferableInput = new TransferableInput(
+      txid,
+      outputidx,
+      avaxAssetID,
+      secpTransferInput
+    )
+    inputs.push(input)
   })
 
   const weight: BN = new BN(1)
   const subnetID: Buffer = bintools.cb58Decode(
-    "8T4oUrP7kXzetGF2bYWF21oJHUT18rJCjfBt3J299hA1Smcqa"
+    "yKRV4EvGYWj7HHXUxSYzaAQVazEvaFPKPhJie4paqbrML5dub"
   )
   const nodeIDBuf: Buffer = NodeIDStringToBuffer(nodeID)
   const addSubnetValidatorTx: AddSubnetValidatorTx = new AddSubnetValidatorTx(

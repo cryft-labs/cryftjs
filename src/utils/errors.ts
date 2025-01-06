@@ -43,7 +43,6 @@ const SUBNET_ID_ERROR_CODE: string = "1041"
 const TYPE_NAME_ERROR_CODE: string = "1042"
 const SUBNET_THRESHOLD_ERROR_CODE: string = "1043"
 const SUBNET_ADDRESS_ERROR_CODE: string = "1044"
-const UNKNOWN_FORMAT_ERROR_CODE: string = "1045"
 
 export class AvalancheError extends Error {
   errorCode: string
@@ -370,13 +369,6 @@ export class SubnetAddressError extends AvalancheError {
   constructor(m: string) {
     super(m, SUBNET_ADDRESS_ERROR_CODE)
     Object.setPrototypeOf(this, SubnetAddressError.prototype)
-  }
-}
-
-export class UnknownFormatError extends AvalancheError {
-  constructor(m: string) {
-    super(m, UNKNOWN_FORMAT_ERROR_CODE)
-    Object.setPrototypeOf(this, UnknownFormatError.prototype)
   }
 }
 

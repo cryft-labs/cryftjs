@@ -47,8 +47,6 @@ export class PlatformVMConstants {
 
   static REWARDVALIDATORTX: number = 20
 
-  static REMOVESUBNETVALIDATORTX: number = 23
-
   static SECPCREDENTIAL: number = 9
 
   static ASSETIDLEN: number = 32

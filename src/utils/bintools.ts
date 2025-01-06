@@ -8,7 +8,7 @@ import createHash from "create-hash"
 import * as bech32 from "bech32"
 import { Base58 } from "./base58"
 import { Bech32Error, ChecksumError, HexError } from "../utils/errors"
-import { isAddress } from "ethers"
+import { utils } from "ethers"
 
 /**
  * A class containing tools useful in interacting with binary data cross-platform using
@@ -336,7 +336,7 @@ export default class BinTools {
   stringToAddress = (address: string, hrp?: string): Buffer => {
     if (address.substring(0, 2) === "0x") {
       // ETH-style address
-      if (isAddress(address)) {
+      if (utils.isAddress(address)) {
         return Buffer.from(address.substring(2), "hex")
       } else {
         throw new HexError("Error - Invalid address")
@@ -364,7 +364,7 @@ export default class BinTools {
     }
 
     if (
-      humanReadablePart !== "avax" &&
+      humanReadablePart !== "cryft" &&
       humanReadablePart !== "fuji" &&
       humanReadablePart != "local" &&
       humanReadablePart != "custom" &&
